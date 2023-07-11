@@ -1,5 +1,7 @@
 ﻿const express = require('express');
 const router = express.Router();
+const validateRequest = require('_middleware/validate-request');
+const Joi = require('joi');
 
 const authorize = require('_middleware/authorize')
 const Role = require('_helpers/role');
@@ -8,12 +10,64 @@ const productService = require('./product.service');
 // routes
 
 router.get('/', authorize(Role.Admin), getAll);
-
+router.post('/', authorize(Role.Admin), createSchema, create);
+router.get('/:id', authorize(), getById);
+router.put('/:id', authorize(), updateSchema, update);
 
 module.exports = router;
 
 function getAll(req, res, next) {
     productService.getAll()
         .then(products => res.json(products))
+        .catch(next);
+}
+
+function createSchema(req, res, next) {
+    const schema = Joi.object({
+        name: Joi.string().required(),
+        image: Joi.array().optional().empty(Joi.array().length(0)).default([null]),
+        price: Joi.number().required(),
+        description: Joi.string().required(),
+    });
+    validateRequest(req, next, schema);
+}
+
+function create(req, res, next) {
+    
+    productService.create(req.body)
+        .then(product => res.json(product))
+        .catch(next);
+}
+
+function getById(req, res, next) {
+    // users can get their own product and admins can get any product
+    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    productService.getById(req.params.id)
+        .then(product => product ? res.json(product) : res.sendStatus(404))
+        .catch(next);
+}
+
+function updateSchema(req, res, next) {
+    const schema = {
+        name: Joi.string().empty(''),
+        image: Joi.string().empty(''),
+        price: Joi.number().empty(''),
+        description: Joi.string().empty(''),
+     };
+
+    validateRequest(req, next, schema);
+}
+
+function update(req, res, next) {
+    // users can update their own account and admins can update any account
+    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    productService.update(req.params.id, req.body)
+        .then(product => res.json(product))
         .catch(next);
 }
