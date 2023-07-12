@@ -9,9 +9,9 @@ const productService = require('./product.service');
 
 // routes
 
-router.get('/', authorize(Role.Admin), getAll);
+router.get('/',  getAll);
 router.post('/', authorize(Role.Admin), createSchema, create);
-router.get('/:id', authorize(), getById);
+router.get('/:id',  getById);
 router.put('/:id', authorize(), updateSchema, update);
 
 module.exports = router;
@@ -27,7 +27,8 @@ function createSchema(req, res, next) {
         name: Joi.string().required(),
         image: Joi.array().optional().empty(Joi.array().length(0)).default([null]),
         price: Joi.number().required(),
-        description: Joi.string().required(),
+        description: Joi.string().optional().empty('').default(''),
+        variants: Joi.array().optional(),
     });
     validateRequest(req, next, schema);
 }
@@ -40,11 +41,7 @@ function create(req, res, next) {
 }
 
 function getById(req, res, next) {
-    // users can get their own product and admins can get any product
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-
+    
     productService.getById(req.params.id)
         .then(product => product ? res.json(product) : res.sendStatus(404))
         .catch(next);
@@ -56,6 +53,7 @@ function updateSchema(req, res, next) {
         image: Joi.string().empty(''),
         price: Joi.number().empty(''),
         description: Joi.string().empty(''),
+        
      };
 
     validateRequest(req, next, schema);

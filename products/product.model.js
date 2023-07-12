@@ -14,12 +14,17 @@ var skuSchema = new Schema({
     type: Boolean,
     default: true
   }
+  
 });
 
 var variantSchema = new Schema({
   color: {
     type: String,
     default: 'red'
+  },
+  image: {
+    type: Array,
+    default:[]
   },
   skus: {
     type: [skuSchema],

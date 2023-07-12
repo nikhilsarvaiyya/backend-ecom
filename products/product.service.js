@@ -60,8 +60,8 @@ async function _delete(id) {
 }
 
 function basicDetails(product) {
-    const { id, name, image, price,description } = product;
-    return { id, name, image, price,description };
+    const { id, name, image, price,description,variants } = product;
+    return { id, name, image, price,description,variants };
 }
 
 async function getProduct(id) {
