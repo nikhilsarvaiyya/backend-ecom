@@ -34,8 +34,7 @@ var variantSchema = new Schema({
 let ProductSchema = new Schema({
   verified: Date,
   image: {
-    type: Array,
-    default:[]
+    type: Object
   },
   name: {
     type: String

@@ -25,7 +25,7 @@ function getAll(req, res, next) {
 function createSchema(req, res, next) {
     const schema = Joi.object({
         name: Joi.string().required(),
-        image: Joi.array().optional().empty(Joi.array().length(0)).default([null]),
+        image: Joi.array().optional().empty(Joi.array().length(0)).default([]),
         price: Joi.number().required(),
         description: Joi.string().optional().empty('').default(''),
         variants: Joi.array().optional(),
@@ -34,7 +34,7 @@ function createSchema(req, res, next) {
 }
 
 function create(req, res, next) {
-    
+    console.log(req.body)
     productService.create(req.body)
         .then(product => res.json(product))
         .catch(next);
