@@ -23,7 +23,6 @@ async function getById(id) {
 }
 
 async function create(params) {
-    console.log({params})
     // validate
     if (await db.Product.findOne({ name: params.name })) {
         throw 'Name "' + params.name + '" is already registered';

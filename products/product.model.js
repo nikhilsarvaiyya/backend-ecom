@@ -39,7 +39,7 @@ let ProductSchema = new Schema({
   name: {
     type: String
   },
-  brand: {
+  category: {
     type: String
   },
   description: {

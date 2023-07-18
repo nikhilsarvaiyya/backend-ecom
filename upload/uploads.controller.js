@@ -18,7 +18,6 @@ router.post('/', uploadImage);
 function uploadImage(req, res, next) {
     const upload = multer({ storage }).array('images', 5)
     upload(req, res, function (err) {
-        console.log(req.files)
         if (err) {
             return res.send(err)
         }

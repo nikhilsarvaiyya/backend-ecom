@@ -27,6 +27,7 @@ function createSchema(req, res, next) {
         name: Joi.string().required(),
         image: Joi.array().optional().empty(Joi.array().length(0)).default([]),
         price: Joi.number().required(),
+        category: Joi.string().required(),
         description: Joi.string().optional().empty('').default(''),
         variants: Joi.array().optional(),
     });
@@ -34,7 +35,6 @@ function createSchema(req, res, next) {
 }
 
 function create(req, res, next) {
-    console.log(req.body)
     productService.create(req.body)
         .then(product => res.json(product))
         .catch(next);
@@ -49,12 +49,13 @@ function getById(req, res, next) {
 
 function updateSchema(req, res, next) {
     const schema = {
-        name: Joi.string().empty(''),
-        image: Joi.string().empty(''),
-        price: Joi.number().empty(''),
-        description: Joi.string().empty(''),
-        
-     };
+        name: Joi.string().required(),
+        image: Joi.array().optional().empty(Joi.array().length(0)).default([]),
+        price: Joi.number().required(),
+        category: Joi.string().required(),
+        description: Joi.string().optional().empty('').default(''),
+        variants: Joi.array().optional(),
+    };
 
     validateRequest(req, next, schema);
 }
