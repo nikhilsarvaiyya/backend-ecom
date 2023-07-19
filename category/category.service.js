@@ -22,12 +22,12 @@ async function getById(id) {
 async function create(params) {
     // validate
     if (await db.Category.findOne({ category: params.category })) {
-        throw 'Category "' + params.category + '" is already registered';
+        throw 'Category "' + params.category + '" is already Available';
     }
 
-    if (await db.Category.findOne({ subCategory: params.subCategory })) {
-        throw 'Sub Category "' + params.subCategory + '" is already Available';
-    }
+    // if (params.subCategory !== null && await db.Category.findOne({ subCategory: params.subCategory })) {
+    //     throw 'Sub Category "' + params.subCategory + '" is already Available';
+    // }
 
     const category = new db.Category(params);
     //category.verified = Date.now();
