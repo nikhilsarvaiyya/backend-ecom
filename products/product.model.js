@@ -65,7 +65,10 @@ let ProductSchema = new Schema({
 }, {
   strict: false
 }, {
-  timestamps: true
+  timestamps: {
+    createdAt: 'createdAt', // Use `created_at` to store the created date
+    updatedAt: 'updatedAt' // and `updated_at` to store the last updated date
+  }
 }, {
   collection: 'product'
 })

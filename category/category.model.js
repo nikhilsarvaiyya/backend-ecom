@@ -1,18 +1,31 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let subCategorySchema = new Schema({
-  type: String
-});
 let CategorySchema = new Schema({
-  category: {
-    type: String
+  name : {
+    type : String,
+    required:true,
+    unique: true
   },
-  subCategory: { 
-    type: Array, 
-    ref: "Category" 
+  category : {
+    type : String,
+    required:true
   },
-}, {
+  parentId : {
+    type : String
+  },
+  level:{
+    type:Number,
+    enum: [1,2,3,4,5,6,7,8,9],
+    required:true
+  },
+},{
+  timestamps: {
+    createdAt: 'createdAt', // Use `created_at` to store the created date
+    updatedAt: 'updatedAt' // and `updated_at` to store the last updated date
+  }
+} ,
+ {
   collection: 'categories'
 })
 module.exports = mongoose.model('Category', CategorySchema)

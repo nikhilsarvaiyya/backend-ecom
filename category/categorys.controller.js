@@ -9,7 +9,7 @@ const categoryService = require('./category.service');
 
 // routes
 router.get('/',  getAll);
-router.post('/', authorize(Role.Admin), createSchema, create);
+router.post('/', authorize(Role.Admin),  create);
 router.get('/:id', getById);
 router.put('/:id', authorize(), update);
 
@@ -24,13 +24,15 @@ function getAll(req, res, next) {
 function createSchema(req, res, next) {
     const schema = Joi.object({
         category: Joi.string().required(),
-        subCategory: Joi.array().optional().empty(Joi.array().length(0)).default([]),
+        childCategory: Joi.string().optional(),
+        childSubCategory: Joi.string().optional()
        
     });
     validateRequest(req, next, schema);
 }
 
 function create(req, res, next) {
+    console.log(req.body)
     categoryService.create(req.body)
         .then(category => res.json(category))
         .catch(next);

@@ -18,6 +18,11 @@ const schema = new Schema({
     passwordReset: Date,
     created: { type: Date, default: Date.now },
     updated: Date
+},{
+    timestamps: {
+      createdAt: 'createdAt', // Use `created_at` to store the created date
+      updatedAt: 'updatedAt' // and `updated_at` to store the last updated date
+    }
 });
 
 schema.virtual('isVerified').get(function () {

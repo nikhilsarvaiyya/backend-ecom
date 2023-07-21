@@ -4,14 +4,28 @@ const db = require('_helpers/db');
 module.exports = {
     create,
     update,
-    getAll, 
+    getAll,
     getById,
     delete: _delete
 };
 
+function convertInTree(categorys) {
+    const result = categorys
+            .map(x => basicDetails(x))
+            .reduce((r, { level, ...rest }) => {
+       
+        const value = { ...rest, children: [] }
+        r[level] = value.children;
+        r[level - 1].push(value)
+        return r;
+    }, [[]]).shift()
+
+    return result
+}
+
 async function getAll() {
     const categorys = await db.Category.find();
-    return categorys.map(x => basicDetails(x));
+    return convertInTree(categorys);
 }
 
 async function getById(id) {
@@ -21,9 +35,9 @@ async function getById(id) {
 
 async function create(params) {
     // validate
-    if (await db.Category.findOne({ category: params.category })) {
-        throw 'Category "' + params.category + '" is already Available';
-    }
+    // if (await db.Category.findOne({ category: params.category })) {
+    //     throw 'Category "' + params.category + '" is already Available';
+    // }
 
     // if (params.subCategory !== null && await db.Category.findOne({ subCategory: params.subCategory })) {
     //     throw 'Sub Category "' + params.subCategory + '" is already Available';
@@ -60,8 +74,8 @@ async function _delete(id) {
 }
 
 function basicDetails(cat) {
-    const { id, category, subCategory } = cat;
-    return { id, category, subCategory };
+    const { id, name,category, parentId, level } = cat;
+    return { id, name,category, parentId, level };
 }
 
 async function getCategory(id) {
