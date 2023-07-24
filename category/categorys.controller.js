@@ -9,6 +9,7 @@ const categoryService = require('./category.service');
 
 // routes
 router.get('/',  getAll);
+router.get('/:type',  getCategoryByType);
 router.post('/', authorize(Role.Admin),  create);
 router.get('/:id', getById);
 router.put('/:id', authorize(), update);
@@ -17,6 +18,13 @@ module.exports = router;
 
 function getAll(req, res, next) {
     categoryService.getAll()
+        .then(categorys => res.json(categorys))
+        .catch(next);
+}
+
+function getCategoryByType(req, res, next) {
+    
+    categoryService.getCategoryByType(req.params.type)
         .then(categorys => res.json(categorys))
         .catch(next);
 }
@@ -32,7 +40,7 @@ function createSchema(req, res, next) {
 }
 
 function create(req, res, next) {
-    console.log(req.body)
+    
     categoryService.create(req.body)
         .then(category => res.json(category))
         .catch(next);

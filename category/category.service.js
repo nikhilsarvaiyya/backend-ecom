@@ -5,27 +5,24 @@ module.exports = {
     create,
     update,
     getAll,
+    getCategoryByType,
     getById,
     delete: _delete
 };
 
-function convertInTree(categorys) {
-    const result = categorys
-            .map(x => basicDetails(x))
-            .reduce((r, { level, ...rest }) => {
-       
-        const value = { ...rest, children: [] }
-        r[level] = value.children;
-        r[level - 1].push(value)
-        return r;
-    }, [[]]).shift()
-
-    return result
-}
+const convertInTree = (xs, id = 0) => xs
+.filter (x => x.parentId == id )
+.map(xs => basicDetails(xs))
+.map ((x) => ({...x, children: convertInTree (xs, x.id)}))
 
 async function getAll() {
     const categorys = await db.Category.find();
     return convertInTree(categorys);
+}
+
+async function getCategoryByType(type) {
+    const category = await db.Category.find({category:type});
+    return convertInTree(category)
 }
 
 async function getById(id) {
@@ -54,9 +51,9 @@ async function create(params) {
 
 async function update(id, params) {
     const category = await getCategory(id);
-
+    
     // validate (if email was changed)
-    if (params.category && category.category !== params.category && await db.Category.findOne({ category: params.category })) {
+    if (params.category && category.name !== params.category && await db.Category.findOne({ name: params.category })) {
         throw 'Name "' + params.category + '" is already taken';
     }
 
@@ -74,6 +71,7 @@ async function _delete(id) {
 }
 
 function basicDetails(cat) {
+    
     const { id, name,category, parentId, level } = cat;
     return { id, name,category, parentId, level };
 }
@@ -84,3 +82,4 @@ async function getCategory(id) {
     if (!category) throw 'Category not found';
     return category;
 }
+
