@@ -13,7 +13,30 @@ module.exports = {
 
 
 async function getAll() {
-    const products = await db.Product.find();
+    const products = await db.Product.find().populate({
+        path: 'category',
+        model: 'Category',
+        populate: [{
+            path: 'parentId',
+            model: 'Category',
+            populate: [{
+                path: 'parentId',
+                model: 'Category',
+                populate: [{
+                    path: 'parentId',
+                    model: 'Category',
+                    populate: [{
+                        path: 'parentId',
+                        model: 'Category',
+                        populate: [{
+                            path: 'parentId',
+                            model: 'Category'
+                        }],
+                    }],
+                }],
+             }]
+        }]
+    });
     return products.map(x => basicDetails(x));
 }
 
@@ -59,8 +82,8 @@ async function _delete(id) {
 }
 
 function basicDetails(product) {
-    const { id, name, image, price,description,variants } = product;
-    return { id, name, image, price,description,variants };
+    const { id, name, image, price,description,variants,category } = product;
+    return { id, name, image, price,description,variants,category };
 }
 
 async function getProduct(id) {

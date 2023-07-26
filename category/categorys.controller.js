@@ -9,7 +9,7 @@ const categoryService = require('./category.service');
 
 // routes
 router.get('/',  getAll);
-router.get('/:type',  getCategoryByType);
+router.get('/:type/:pattern',  getCategoryByType);
 router.post('/', authorize(Role.Admin),  create);
 router.get('/:id', getById);
 router.put('/:id', authorize(), update);
@@ -23,8 +23,7 @@ function getAll(req, res, next) {
 }
 
 function getCategoryByType(req, res, next) {
-    
-    categoryService.getCategoryByType(req.params.type)
+    categoryService.getCategoryByType(req.params)
         .then(categorys => res.json(categorys))
         .catch(next);
 }

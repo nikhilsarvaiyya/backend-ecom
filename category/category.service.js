@@ -10,7 +10,7 @@ module.exports = {
     delete: _delete
 };
 
-const convertInTree = (xs, id = 0) => xs
+const convertInTree = (xs, id = null) => xs
 .filter (x => x.parentId == id )
 .map(xs => basicDetails(xs))
 .map ((x) => ({...x, children: convertInTree (xs, x.id)}))
@@ -20,9 +20,13 @@ async function getAll() {
     return convertInTree(categorys);
 }
 
-async function getCategoryByType(type) {
-    const category = await db.Category.find({category:type});
-    return convertInTree(category)
+async function getCategoryByType(params) {
+    const category = await db.Category.find({category:params.type});
+    if(params?.pattern == 'tree'){
+        return convertInTree(category)
+    } else{
+        return category.map(x => basicDetails(x));
+    } 
 }
 
 async function getById(id) {

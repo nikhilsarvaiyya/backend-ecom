@@ -34,13 +34,15 @@ var variantSchema = new Schema({
 let ProductSchema = new Schema({
   verified: Date,
   image: {
-    type: Object
+    type: Object,
+    default:null
   },
   name: {
     type: String
   },
   category: {
-    type: String
+    type: mongoose.Types.ObjectId,
+    ref:'Category'
   },
   description: {
     type: String,

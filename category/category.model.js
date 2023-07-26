@@ -12,7 +12,9 @@ let CategorySchema = new Schema({
     required:true
   },
   parentId : {
-    type : String
+    type: mongoose.Types.ObjectId,
+    ref:'Category',
+    default:null
   },
   level:{
     type:Number,
