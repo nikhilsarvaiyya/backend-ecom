@@ -10,9 +10,9 @@ const productService = require('./product.service');
 // routes
 
 router.get('/',  getAll);
-router.post('/', authorize(Role.Admin), createSchema, create);
+router.post('/', authorize(Role.Admin),  create);
 router.get('/:id',  getById);
-router.put('/:id', authorize(), updateSchema, update);
+router.put('/:id', authorize(),  update);
 
 module.exports = router;
 
@@ -29,12 +29,13 @@ function createSchema(req, res, next) {
         price: Joi.number().required(),
         category: Joi.string().required(),
         description: Joi.string().optional().empty('').default(''),
-        variants: Joi.array().optional(),
+        variants: Joi.array().empty(Joi.array().length(0)).default([]),
     });
     validateRequest(req, next, schema);
 }
 
 function create(req, res, next) {
+    
     productService.create(req.body)
         .then(product => res.json(product))
         .catch(next);

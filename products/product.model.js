@@ -4,14 +4,14 @@ const Schema = mongoose.Schema;
 var skuSchema = new Schema({
   size: {
     type: String,
-    default: 'L'
+    default: null
   },
   quantity:{
-    type: Number,
-    default: 10
+    type: String,
+    default: 0
   },
   inStock: {
-    type: Boolean,
+    type: String,
     default: true
   }
   
