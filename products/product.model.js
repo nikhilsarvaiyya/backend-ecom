@@ -7,11 +7,11 @@ var skuSchema = new Schema({
     default: null
   },
   quantity:{
-    type: String,
+    type: Number,
     default: 0
   },
   inStock: {
-    type: String,
+    type: Boolean,
     default: true
   }
   
@@ -20,10 +20,11 @@ var skuSchema = new Schema({
 var variantSchema = new Schema({
   color: {
     type: String,
-    default: 'red'
+    default: 'black',
+    unique: true
   },
   image: {
-    type: Array,
+    type: Object,
     default:[]
   },
   skus: {
@@ -51,7 +52,6 @@ let ProductSchema = new Schema({
   variants: {
     type: [variantSchema]
   },
-  
   price: {
     type: Number,
     default:234

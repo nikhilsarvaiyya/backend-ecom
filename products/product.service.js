@@ -50,7 +50,7 @@ async function create(params) {
     if (await db.Product.findOne({ name: params.name })) {
         throw 'Name "' + params.name + '" is already registered';
     }
-
+   
     const product = new db.Product(params);
     product.verified = Date.now();
 
@@ -61,19 +61,33 @@ async function create(params) {
 }
 
 async function update(id, params) {
+    console.log("params",params)
     const product = await getProduct(id);
-    console.log("aaaaaaaaaaaaa",product)
+    await checkColor(product,params)
+    
     // validate (if email was changed)
     if (params.name && product.name !== params.name && await db.Product.findOne({ name: params.name })) {
         throw 'Name "' + params.name + '" is already taken';
     }
-    console.log("params",params)
+   
     // copy params to product and save
     Object.assign(product, params);
     //product.updated = Date.now();
     await product.save();
 
     return basicDetails(product);
+}
+
+function checkColor(product,newVariant) {
+    var a = product?.variants?.length;
+    var b = newVariant?.variants?.length;
+    if(a!==b){
+        var lastItem = newVariant?.variants[newVariant?.variants?.length - 1];
+        if (product?.variants?.some(all => all.color == lastItem.color)) {
+            throw 'Color "' + lastItem.color + '" is already Available';   
+        }
+    }
+    
 }
 
 async function _delete(id) {
